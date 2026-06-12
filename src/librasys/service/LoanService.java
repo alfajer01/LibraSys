@@ -3,6 +3,9 @@ package librasys.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import librasys.exception.BookNotAvailableException;
+import librasys.exception.LoanAlreadyReturnedException;
+import librasys.exception.MemberInactiveException;
 import librasys.model.Book;
 import librasys.model.Loan;
 import librasys.model.LoanStatus;
@@ -36,10 +39,11 @@ public class LoanService {
             throw new IllegalArgumentException("Book cannot be null.");
         }
         if (!member.isActive()) {
-            throw new IllegalArgumentException("Inactive member cannot borrow books.");
+            throw new MemberInactiveException(
+                    "Inactive member cannot borrow books.");
         }
         if (!book.isAvailable()) {
-            throw new IllegalArgumentException("Book is not available.");
+            throw new BookNotAvailableException("Book is not available.");
         }
 
         LocalDate loanDate = LocalDate.now();
@@ -57,7 +61,8 @@ public class LoanService {
             throw new IllegalArgumentException("Loan cannot be null.");
         }
         if (loan.getStatus() == LoanStatus.RETURNED) {
-            throw new IllegalArgumentException("Loan has already been returned.");
+            throw new LoanAlreadyReturnedException(
+                    "Loan has already been returned.");
         }
 
         if (loan.getReturnDate() == null) {
