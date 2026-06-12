@@ -38,6 +38,24 @@ public class AuthService {
         return null;
     }
 
+    public void addUser(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null.");
+        }
+        if (findUserByEmail(user.getEmail()) != null) {
+            throw new IllegalArgumentException(
+                    "User email already exists: " + user.getEmail());
+        }
+        users.add(user);
+    }
+
+    public void removeUserByEmail(String email) {
+        if (isBlank(email)) {
+            throw new IllegalArgumentException("Email cannot be empty.");
+        }
+        users.removeIf(user -> user.getEmail().equalsIgnoreCase(email));
+    }
+
     public void logout(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null.");
@@ -47,6 +65,19 @@ public class AuthService {
 
     public List<User> getAllUsers() {
         return new ArrayList<>(users);
+    }
+
+    public User findUserByEmail(String email) {
+        if (isBlank(email)) {
+            return null;
+        }
+
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     private boolean isBlank(String value) {

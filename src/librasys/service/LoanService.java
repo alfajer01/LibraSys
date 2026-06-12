@@ -95,6 +95,20 @@ public class LoanService {
         return new ArrayList<>(loans);
     }
 
+    public Loan findLoanById(String loanId) {
+        if (loanId == null || loanId.trim().isEmpty()) {
+            return null;
+        }
+
+        refreshOverdueStatus();
+        for (Loan loan : loans) {
+            if (loan.getLoanId().equals(loanId)) {
+                return loan;
+            }
+        }
+        return null;
+    }
+
     private void refreshOverdueStatus() {
         LocalDate today = LocalDate.now();
         for (Loan loan : loans) {

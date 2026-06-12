@@ -66,6 +66,19 @@ public class BookService {
         return result;
     }
 
+    public Book findBookById(String bookId) {
+        if (isBlank(bookId)) {
+            return null;
+        }
+
+        for (Book book : books) {
+            if (book.getBookId().equals(bookId)) {
+                return book;
+            }
+        }
+        return null;
+    }
+
     public List<Book> getAllBooks() {
         return new ArrayList<>(books);
     }
