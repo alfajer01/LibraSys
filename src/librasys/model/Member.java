@@ -1,5 +1,9 @@
 package librasys.model;
 
+/**
+ *
+ * @author AmmarPasifiky
+ */
 public class Member extends User {
 
     private String memberNumber;
@@ -14,7 +18,7 @@ public class Member extends User {
 
     @Override
     public void displayInfo() {
-        System.out.println("Member ID: " + getUserId());
+        System.out.println("User ID: " + getUserId());
         System.out.println("Name: " + getName());
         System.out.println("Email: " + getEmail());
         System.out.println("Member Number: " + memberNumber);

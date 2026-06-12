@@ -1,5 +1,9 @@
 package librasys.model;
 
+/**
+ *
+ * @author AmmarPasifiky
+ */
 public class Librarian extends User {
 
     private String employeeId;

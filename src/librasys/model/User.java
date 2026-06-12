@@ -1,5 +1,9 @@
 package librasys.model;
 
+/**
+ *
+ * @author AmmarPasifiky
+ */
 public abstract class User {
 
     private String userId;
