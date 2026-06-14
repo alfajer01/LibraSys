@@ -39,9 +39,11 @@ public class MemberPanel extends JPanel {
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private JButton passwordVisibilityButton;
+    private JButton confirmPasswordVisibilityButton;
     private JCheckBox activeCheckBox;
     private char defaultPasswordEchoChar;
     private boolean passwordVisible;
+    private boolean confirmPasswordVisible;
     private String selectedMemberNumber;
     private String selectedEmail;
 
@@ -124,9 +126,12 @@ public class MemberPanel extends JPanel {
         confirmPasswordField = new JPasswordField();
         defaultPasswordEchoChar = passwordField.getEchoChar();
         passwordVisibilityButton = new JButton("Show");
+        confirmPasswordVisibilityButton = new JButton("Show");
         activeCheckBox = new JCheckBox("Active member");
         passwordVisibilityButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         passwordVisibilityButton.setFocusPainted(false);
+        confirmPasswordVisibilityButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        confirmPasswordVisibilityButton.setFocusPainted(false);
         activeCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         activeCheckBox.setOpaque(false);
         activeCheckBox.setSelected(true);
@@ -163,6 +168,8 @@ public class MemberPanel extends JPanel {
         clearButton.addActionListener(event -> clearForm());
         passwordVisibilityButton.addActionListener(
                 event -> togglePasswordVisibility());
+        confirmPasswordVisibilityButton.addActionListener(
+                event -> toggleConfirmPasswordVisibility());
 
         formPanel.add(formTitle, BorderLayout.NORTH);
         formPanel.add(fieldsPanel, BorderLayout.CENTER);
@@ -197,6 +204,15 @@ public class MemberPanel extends JPanel {
             passwordPanel.add(field, BorderLayout.CENTER);
             passwordPanel.add(passwordVisibilityButton, BorderLayout.EAST);
             panel.add(passwordPanel, fieldConstraints);
+        } else if (field == confirmPasswordField) {
+            JPanel confirmPasswordPanel = new JPanel(new BorderLayout(6, 0));
+            confirmPasswordPanel.setOpaque(false);
+            field.setPreferredSize(new Dimension(170, 32));
+            confirmPasswordVisibilityButton.setPreferredSize(new Dimension(64, 32));
+            confirmPasswordPanel.add(field, BorderLayout.CENTER);
+            confirmPasswordPanel.add(confirmPasswordVisibilityButton,
+                    BorderLayout.EAST);
+            panel.add(confirmPasswordPanel, fieldConstraints);
         } else {
             field.setPreferredSize(new Dimension(240, 32));
             panel.add(field, fieldConstraints);
@@ -331,7 +347,9 @@ public class MemberPanel extends JPanel {
         passwordField.setText("");
         confirmPasswordField.setText("");
         passwordVisible = true;
+        confirmPasswordVisible = true;
         togglePasswordVisibility();
+        toggleConfirmPasswordVisibility();
         activeCheckBox.setSelected(true);
     }
 
@@ -372,7 +390,15 @@ public class MemberPanel extends JPanel {
                 ? (char) 0
                 : defaultPasswordEchoChar;
         passwordField.setEchoChar(echoChar);
-        confirmPasswordField.setEchoChar(echoChar);
         passwordVisibilityButton.setText(passwordVisible ? "Hide" : "Show");
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        confirmPasswordVisible = !confirmPasswordVisible;
+        confirmPasswordField.setEchoChar(confirmPasswordVisible
+                ? (char) 0
+                : defaultPasswordEchoChar);
+        confirmPasswordVisibilityButton.setText(
+                confirmPasswordVisible ? "Hide" : "Show");
     }
 }

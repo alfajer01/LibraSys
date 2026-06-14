@@ -109,6 +109,22 @@ public class LoanService {
         return null;
     }
 
+    public List<Loan> getLoansByMember(Member member) {
+        if (member == null) {
+            throw new IllegalArgumentException("Member cannot be null.");
+        }
+
+        refreshOverdueStatus();
+        List<Loan> memberLoans = new ArrayList<>();
+        for (Loan loan : loans) {
+            if (loan.getMember().getMemberNumber()
+                    .equals(member.getMemberNumber())) {
+                memberLoans.add(loan);
+            }
+        }
+        return memberLoans;
+    }
+
     private void refreshOverdueStatus() {
         LocalDate today = LocalDate.now();
         for (Loan loan : loans) {

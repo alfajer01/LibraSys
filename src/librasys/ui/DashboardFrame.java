@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import librasys.AppContext;
+import librasys.model.Member;
 import librasys.model.User;
 
 /**
@@ -30,6 +31,7 @@ public class DashboardFrame extends JFrame {
     private CardLayout cardLayout;
     private JLabel dateTimeLabel;
     private Timer clockTimer;
+    private JPanel menuPanel;
 
     public DashboardFrame(AppContext appContext, User currentUser) {
         this.appContext = appContext;
@@ -51,18 +53,13 @@ public class DashboardFrame extends JFrame {
         JPanel rootPanel = new JPanel(new BorderLayout());
         rootPanel.setBackground(new Color(245, 247, 250));
 
-        JPanel sidebarPanel = createSidebarPanel();
-        JPanel headerPanel = createHeaderPanel();
-
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         contentPanel.setBackground(new Color(245, 247, 250));
 
-        contentPanel.add(new BookPanel(appContext), "Books");
-        contentPanel.add(new MemberPanel(appContext), "Members");
-        contentPanel.add(new LoanPanel(appContext), "Loans");
-        contentPanel.add(new ReportPanel(appContext), "Reports");
+        JPanel sidebarPanel = createSidebarPanel();
+        JPanel headerPanel = createHeaderPanel();
 
         rootPanel.add(sidebarPanel, BorderLayout.WEST);
         rootPanel.add(headerPanel, BorderLayout.NORTH);
@@ -80,14 +77,11 @@ public class DashboardFrame extends JFrame {
         appLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         appLabel.setForeground(Color.WHITE);
 
-        JPanel menuPanel = new JPanel(new GridLayout(4, 1, 0, 10));
+        menuPanel = new JPanel(new GridLayout(0, 1, 0, 10));
         menuPanel.setOpaque(false);
         menuPanel.setBorder(BorderFactory.createEmptyBorder(28, 0, 0, 0));
 
-        menuPanel.add(createMenuButton("Books"));
-        menuPanel.add(createMenuButton("Members"));
-        menuPanel.add(createMenuButton("Loans"));
-        menuPanel.add(createMenuButton("Reports"));
+        configureDashboardContent();
 
         JButton logoutButton = createSidebarButton("Logout");
         logoutButton.addActionListener(event -> handleLogout());
@@ -137,6 +131,34 @@ public class DashboardFrame extends JFrame {
         return button;
     }
 
+    private void configureDashboardContent() {
+        if ("Member".equals(currentUser.getRole()) && currentUser instanceof Member) {
+            configureMemberDashboard((Member) currentUser);
+        } else {
+            configureLibrarianDashboard();
+        }
+    }
+
+    private void configureLibrarianDashboard() {
+        contentPanel.add(new BookPanel(appContext), "Books");
+        contentPanel.add(new MemberPanel(appContext), "Members");
+        contentPanel.add(new LoanPanel(appContext), "Loans");
+        contentPanel.add(new ReportPanel(appContext), "Reports");
+
+        menuPanel.add(createMenuButton("Books"));
+        menuPanel.add(createMenuButton("Members"));
+        menuPanel.add(createMenuButton("Loans"));
+        menuPanel.add(createMenuButton("Reports"));
+    }
+
+    private void configureMemberDashboard(Member member) {
+        contentPanel.add(new BookCatalogPanel(appContext), "Book Catalog");
+        contentPanel.add(new MemberLoanHistoryPanel(appContext, member), "My Loans");
+
+        menuPanel.add(createMenuButton("Book Catalog"));
+        menuPanel.add(createMenuButton("My Loans"));
+    }
+
     private JButton createSidebarButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -145,27 +167,6 @@ public class DashboardFrame extends JFrame {
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
         return button;
-    }
-
-    private JPanel createPlaceholderPanel(String title, String description) {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(229, 231, 235)),
-                BorderFactory.createEmptyBorder(36, 36, 36, 36)
-        ));
-
-        JLabel titleLabel = new JLabel(title, SwingConstants.LEFT);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(31, 41, 55));
-
-        JLabel descriptionLabel = new JLabel(description, SwingConstants.LEFT);
-        descriptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        descriptionLabel.setForeground(new Color(75, 85, 99));
-
-        panel.add(titleLabel, BorderLayout.NORTH);
-        panel.add(descriptionLabel, BorderLayout.CENTER);
-        return panel;
     }
 
     private void handleLogout() {
