@@ -27,7 +27,7 @@ public class AppContext {
         this.loanService = new LoanService(new StandardFineCalculator());
         this.reportService = new ReportService(loanService);
 
-        DataSeeder.seed(bookService, memberService, authService);
+        DataSeeder.seed(bookService, memberService, authService, loanService);
     }
 
     public BookService getBookService() {
